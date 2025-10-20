@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Opeyemi’s Todo App",
   description: "A modern todo app built with Next.js + React Query",
+  icons: {
+    icon: "/check.png",
+  },
 };
 
 export default function RootLayout({
