@@ -1,15 +1,17 @@
 "use client";
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
 
 import { type FC } from "react";
-import { useParams, useRouter } from "next/navigation"; // ✅ Next.js hooks
+import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { fetchTodosById } from "@/api/todos";
 import type { Todo } from "@/types/todo";
 
 const TodoDetail: FC = () => {
-  const params = useParams<{ id: string }>();
-  const id = params?.id;
   const router = useRouter();
+  const searchParams = useParams<{ id: string }>();
+  const id = searchParams?.id;
 
   const {
     data: todo,
@@ -18,15 +20,9 @@ const TodoDetail: FC = () => {
     error,
   } = useQuery<Todo, Error>({
     queryKey: ["todo", id],
-    queryFn: () => fetchTodosById(Number(id)), // Convert id to number if needed
+    queryFn: () => fetchTodosById(Number(id)),
     enabled: !!id,
   });
-
-  // Handle optimistic todos (which may not exist remotely)
-  if (todo?.__temp || todo?.isOptimistic) {
-    router.push("/"); // ✅ replace navigate("/") with router.push("/")
-    return null;
-  }
 
   if (isLoading) return <p className="p-6 text-lg">Loading Todo...</p>;
   if (isError)
@@ -50,7 +46,7 @@ const TodoDetail: FC = () => {
       </div>
 
       <button
-        onClick={() => router.back()} // ✅ replace navigate(-1) with router.back()
+        onClick={() => router.back()}
         className="mt-6 px-4 py-2 bg-purple-600 cursor-pointer hover:bg-purple-700 text-white rounded"
       >
         Go Back
